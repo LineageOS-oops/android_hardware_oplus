@@ -103,6 +103,9 @@ Return<void> BiometricsFingerprint::onFingerUp() {
         setDimlayerHbm(0);
     }
     return isUff() ? Void() : mOplusBiometricsFingerprint->onFingerUp();
+    if (!this->isEnrolling) {
+        setDimlayerHbm(0);
+    }
 }
 
 Return<void> BiometricsFingerprint::onEnrollResult(uint64_t deviceId, uint32_t fingerId,
