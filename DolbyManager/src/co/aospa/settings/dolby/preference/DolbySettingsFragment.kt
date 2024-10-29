@@ -12,7 +12,8 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
-import android.widget.Switch
+import android.widget.CompoundButton
+import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -35,10 +36,9 @@ import co.aospa.dolby.oplus.DolbyConstants.Companion.dlog
 import co.aospa.dolby.oplus.DolbyController
 import co.aospa.dolby.oplus.R
 import com.android.settingslib.widget.MainSwitchPreference
-import com.android.settingslib.widget.OnMainSwitchChangeListener
 
 class DolbySettingsFragment : PreferenceFragment(),
-    OnPreferenceChangeListener, OnMainSwitchChangeListener {
+    OnPreferenceChangeListener, CompoundButton.OnCheckedChangeListener {
 
     private val switchBar by lazy {
         findPreference<MainSwitchPreference>(PREF_ENABLE)!!
@@ -161,7 +161,7 @@ class DolbySettingsFragment : PreferenceFragment(),
         dlog(TAG, "onPreferenceChange: key=${preference.key} value=$newValue")
         when (preference.key) {
             PREF_PROFILE -> {
-                val profile = newValue.toString().toInt()
+                val profile = newValue.toString()!!.toInt()
                 dolbyController.profile = profile
                 (preferenceManager.preferenceDataStore as DolbyPreferenceStore).profile = profile
                 updateProfileSpecificPrefs()
@@ -176,11 +176,11 @@ class DolbySettingsFragment : PreferenceFragment(),
             }
 
             PREF_STEREO -> {
-                dolbyController.setStereoWideningAmount(newValue.toString().toInt())
+                dolbyController.setStereoWideningAmount(newValue.toString()!!.toInt())
             }
 
             PREF_DIALOGUE -> {
-                dolbyController.setDialogueEnhancerAmount(newValue.toString().toInt())
+                dolbyController.setDialogueEnhancerAmount(newValue.toString()!!.toInt())
             }
 
             PREF_BASS -> {
@@ -192,7 +192,7 @@ class DolbySettingsFragment : PreferenceFragment(),
             }
 
             PREF_IEQ -> {
-                dolbyController.setIeqPreset(newValue.toString().toInt())
+                dolbyController.setIeqPreset(newValue.toString()!!.toInt())
             }
 
             else -> return false
@@ -200,8 +200,8 @@ class DolbySettingsFragment : PreferenceFragment(),
         return true
     }
 
-    override fun onSwitchChanged(switchView: Switch, isChecked: Boolean) {
-        dlog(TAG, "onSwitchChanged($isChecked)")
+    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+        dlog(TAG, "onCheckedChanged($isChecked)")
         dolbyController.dsOn = isChecked
         profilePref.setEnabled(isChecked)
         updateProfileSpecificPrefs()
